@@ -1,22 +1,24 @@
 from robocorp.tasks import task
 from RPA.Browser.Selenium import Selenium
 from RPA.Excel.Files import Files
+from RPA.Robocorp.WorkItems import WorkItems
 from datetime import timedelta, datetime
 from selenium.webdriver.common.by import By
 from utils import Utils
-
-browser = Selenium()
-excel = Files()
+import logging
 
 
-#Parameters
-search_phrase = "Olympics"
-category = 'PHOTO GALLERIES'
-number_of_months = 3
+
 
 @task
 def minimal_task():
     utils= Utils()
+    browser = Selenium()
+    excel = Files()
+    work_items = WorkItems()
+
+    work_items.get_input_work_item()
+    parameters = work_items.get_work_item_variables()
 
     #Open browser and set an wait to load elements on page
     browser.open_available_browser("https://www.aljazeera.com/")
@@ -26,7 +28,7 @@ def minimal_task():
     browser.click_element_when_clickable("xpath://button[@class='no-styles-button' and @type='button']")
 
     # Input the search phrase on the search field
-    browser.input_text_when_element_is_visible("xpath://input[@class='search-bar__input' and @type='text' and @title='Type search term here']", search_phrase)
+    browser.input_text_when_element_is_visible("xpath://input[@class='search-bar__input' and @type='text' and @title='Type search term here']", parameters["search_phrase"])
 
     # Submit the search phrase
     browser.click_element_when_clickable("xpath://button[@class='css-sp7gd' and @type='submit']")
@@ -58,11 +60,11 @@ def minimal_task():
         body_desc = article.find_element(By.CLASS_NAME, "gc__excerpt").text.split("...", 1)
         date = utils.process_date(body_desc[0])
 
-        if utils.filter_by_date(number_of_months, date):
+        if utils.filter_by_date(parameters["number_of_months"], date):
             description = body_desc[1]
             title = article.find_element(By.CLASS_NAME, "gc__title").text
-            count_search_phrases = title.lower().count(search_phrase.lower()) \
-                                + description.lower().count(search_phrase.lower())
+            count_search_phrases = title.lower().count(parameters["search_phrase"].lower()) \
+                                + description.lower().count(parameters["search_phrase"].lower())
             
             # Search for the pattern described by regex in the title and description
             contains_amount_money = utils.has_pattern(title+description, "\$\d{2}\.\d{1}|\$\d{3},\d{3}\.\d{2}|\d{2} dollars|\d{2} USD")
