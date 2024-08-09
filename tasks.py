@@ -98,28 +98,3 @@ def minimal_task():
                                        name=worksheet_name, 
                                        header=True)
     excel.save_workbook(path=excel_filename)
-
-
-
-
-
-    # browser.open_available_browser("https://apnews.com/")
-
-    # browser.alert_should_not_be_present()
-    # browser.click_element_when_clickable("class:SearchOverlay-search-button")
-    # browser.input_text_when_element_is_visible("class:SearchOverlay-search-input", "Olympics")
-    # browser.click_element_when_clickable("class:SearchOverlay-search-submit")
-    # browser.click_element_when_clickable("class:SearchFilter-content")
-    # browser.click_element_when_clickable("class:SearchFilter-seeAll-button")
-
-    # checkboxes = browser.find_elements("name:f2")
-
-    # for checkbox in checkboxes:
-    #     if checkbox.accessible_name == category:
-    #         print("Achou")
-    #         checkbox.click()
-    #         break
-    
-    # browser.click_element_when_clickable("class:Select-input")
-    # browser.click_element_when_visible("xpath://option[text()='Newest']")
-    # print("teste")
