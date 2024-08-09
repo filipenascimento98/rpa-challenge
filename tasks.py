@@ -5,9 +5,6 @@ from RPA.Robocorp.WorkItems import WorkItems
 from datetime import timedelta, datetime
 from selenium.webdriver.common.by import By
 from utils import Utils
-import logging
-
-
 
 
 @task
@@ -45,7 +42,8 @@ def minimal_task():
 
     # Create an excel file
     worksheet_name = "articles"
-    excel_filename = f"data_{datetime.strftime(datetime.now(), '%Y-%m-%d_%H:%M:%S')}.xlsx"
+    now = datetime.strftime(datetime.now(), '%Y-%m-%d_%H:%M:%S')
+    excel_filename = f"data_{now}.xlsx"
     excel.create_workbook(path=excel_filename, sheet_name=worksheet_name)
 
     titles = []
@@ -57,17 +55,22 @@ def minimal_task():
 
     # Get informations about each article and put in an excel file
     for article in articles:
-        body_desc = article.find_element(By.CLASS_NAME, "gc__excerpt").text.split("...", 1)
+        body_desc = article.find_element(
+            By.CLASS_NAME, "gc__excerpt").text.split("...", 1)
         date = utils.process_date(body_desc[0])
 
         if utils.filter_by_date(parameters["number_of_months"], date):
             description = body_desc[1]
             title = article.find_element(By.CLASS_NAME, "gc__title").text
-            count_search_phrases = title.lower().count(parameters["search_phrase"].lower()) \
-                                + description.lower().count(parameters["search_phrase"].lower())
+            count_search_phrases = title.lower().count(
+                                    parameters["search_phrase"].lower()) \
+                                    + description.lower().count(
+                                    parameters["search_phrase"].lower())
             
             # Search for the pattern described by regex in the title and description
-            contains_amount_money = utils.has_pattern(title+description, "\$\d{2}\.\d{1}|\$\d{3},\d{3}\.\d{2}|\d{2} dollars|\d{2} USD")
+            contains_amount_money = utils.has_pattern(
+                title+description 
+                , "\$\d{2}\.\d{1}|\$\d{3},\d{3}\.\d{2}|\d{2} dollars|\d{2} USD")
 
             # Download the image's article
             img = article.find_element(By.CLASS_NAME, "article-card__image")
